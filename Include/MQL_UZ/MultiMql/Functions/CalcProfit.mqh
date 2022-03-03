@@ -1,9 +1,9 @@
 //+------------------------------------------------------------------+
 //|                                                   CalcProfit.mqh |
-//|                     Nematillo Ochilov and Almaz (DiamondSystems) |
+//|                                                       MQLUZ Team |
 //|                                               https://t.me/MQLUZ |
 //+------------------------------------------------------------------+
-#property copyright "Nematillo Ochilov and Almaz (DiamondSystems)"
+#property copyright "MQLUZ Team"
 #property link      "https://t.me/MQLUZ"
 
 //+------------------------------------------------------------------+
