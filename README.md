@@ -1,2 +1,2 @@
-# MQL_UZ
-Nematullo Ochilov va Almaz Allaberenov birgalikdagi proektlari
+# MQL UZ TEAM
+[MQLUZ](https://t.me/MQLUZ) Telegram guruh jamoasi
