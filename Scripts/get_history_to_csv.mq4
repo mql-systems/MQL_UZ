@@ -19,7 +19,7 @@ void get_history(string iSymbol)
     for (int i = 0; i <= 8 ; i++)
     {
         int iPeriod = minutes[i];
-        int file = FileOpen(IntegerToString(iPeriod) + ".csv", FILE_CSV | FILE_ANSI | FILE_WRITE, ',');
+        int file = FileOpen(iSymbol + IntegerToString(iPeriod) + ".csv", FILE_CSV | FILE_ANSI | FILE_WRITE, ',');
         FileWrite(file, "Time", "Open", "High", "Low", "Close", "Volume");
         int bar = iBars(iSymbol, iPeriod);
         for (int iBar = bar - 1; iBar >= 0 ; iBar--)
