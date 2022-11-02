@@ -13,7 +13,7 @@ extern string symbol_name = "XAUUSD";
 // list of timeframes
 int minutes[9] = {1, 5, 15, 30, 60, 240, 1440, 10080, 43200};
 
-// a function that uploads the history of quotations to a csv file
+// a function that downloads the history of quotations to a csv file
 void get_history(string iSymbol)
 {
     for (int i = 0; i <= 8 ; i++)
