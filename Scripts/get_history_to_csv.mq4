@@ -9,10 +9,9 @@
 //+--------------------------------------------------------------------------------------------------+
 #property show_inputs
 
-extern string start_date = "2018.01.01";
-extern string end_date = "2022.11.01";
-datetime sd = StringToTime(start_date);
-datetime ed = StringToTime(end_date);
+extern datetime start_date = __DATETIME__;
+extern datetime end_date = __DATETIME__;
+
 
 // list of timeframes
 int minutes[9] = {1, 5, 15, 30, 60, 240, 1440, 10080, 43200};
@@ -23,29 +22,52 @@ void get_history()
     for (int i = 0; i <= 8 ; i++)
     {
         int iPeriod = minutes[i];
+        int rates_count = 0;
+        string symbol_name = Symbol() + IntegerToString(iPeriod);
         MqlRates rates[];
-        CopyRates(Symbol(), iPeriod, sd, ed, rates);
-        int bar = ArrayRange(rates, 0);
-        int file = FileOpen(Symbol() + IntegerToString(iPeriod) + ".csv", FILE_CSV | FILE_WRITE, ',');
-        FileWrite(file, "Time", "Open", "High", "Low", "Close", "Volume");
-        string iSymbol = Symbol();
-        for (int iBar = 0; iBar < bar ; iBar++)
+        for (int r = 1; r < 4; r++)
         {
-            string date = TimeToString(rates[iBar].time, TIME_DATE|TIME_MINUTES);
-            double open = rates[iBar].open;
-            double high = rates[iBar].high;
-            double low = rates[iBar].low;
-            double close = rates[iBar].close;
-            double volume = rates[iBar].tick_volume ;
-            FileWrite(file, date, open, high, low, close, volume);
+            rates_count = CopyRates(Symbol(), iPeriod, start_date, end_date, rates);
+            if (rates_count == 1) break;
+            Sleep(r * 100);
         }
-        FileClose(file);
+        if (rates_count < 1) Alert("ERROR: The " + symbol_name + " pair quote is not fully loaded"); continue;
+        int bar = ArrayRange(rates, 0);
+        int file = FileOpen(symbol_name + ".csv", FILE_CSV | FILE_WRITE, ',');
+        if (file != INVALID_HANDLE)
+        {
+            FileWrite(file, "Time", "Open", "High", "Low", "Close", "Volume");
+            for (int iBar = 0; iBar < bar ; iBar++)
+            {
+                FileWrite(
+                    file,
+                    TimeToString(rates[iBar].time, TIME_DATE|TIME_MINUTES),
+                    rates[iBar].open,
+                    rates[iBar].high,
+                    rates[iBar].low,
+                    rates[iBar].close,
+                    rates[iBar].tick_volume
+                );
+            }
+            FileClose(file);
+        }
+        else
+        {
+            Alert("ERROR: Invalid open file");
+        }
     }
 }
 
 // main function
 void start()
 {
-    get_history();
-    Alert("LOADING COMPLETE");
+    if (start_date < end_date)
+    {
+        get_history();
+        Alert("LOADING COMPLETE");
+    }
+    else
+    {
+        Alert("ERROR: The timing is wrong");
+    }
 }
