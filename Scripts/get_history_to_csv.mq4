@@ -12,42 +12,47 @@
 extern datetime start_date = __DATETIME__;
 extern datetime end_date = __DATETIME__;
 
-
 // list of timeframes
 int minutes[9] = {1, 5, 15, 30, 60, 240, 1440, 10080, 43200};
 
 // a function that downloads the history of quotations to a csv file
-int get_history()
+void get_history()
 {
+    int iBar, iPeriod, rates_count, historyBarCnt, file;
+    string symbol_name;
+    
     for (int i = 0; i <= 8 ; i++)
     {
-        int iPeriod = minutes[i];
-        int rates_count = 0;
-        string symbol_name = Symbol() + IntegerToString(iPeriod);
+        iPeriod = minutes[i];
+        symbol_name = Symbol() + IntegerToString(iPeriod);
+        
+        //--- loading history
         MqlRates rates[];
         for (int r = 1; r < 4; r++)
         {
             rates_count = CopyRates(Symbol(), iPeriod, start_date, end_date, rates);
             if (rates_count > 0)
             {
-               int barCnt = Bars(_Symbol, iPeriod, start_date, end_date);
-               if (barCnt == rates_count)
+               historyBarCnt = Bars(_Symbol, iPeriod, start_date, end_date);
+               if (historyBarCnt == rates_count)
                   break;
-               else Sleep(r * 100);
-            }
-            if (rates_count < 1)
-            {
-                Alert("ERROR: The " + symbol_name + " pair quote is not fully loaded");
-                return(0);
             }
             rates_count = 0;
+            Sleep(r * 100);
         }
-        int bar = ArrayRange(rates, 0);
-        int file = FileOpen(symbol_name + ".csv", FILE_CSV | FILE_WRITE, ',');
+
+        if (rates_count < 1)
+        {
+            Alert("ERROR: The " + symbol_name + " pair quote is not fully loaded");
+            return;
+        }
+        
+        //--- conversion to csv
+        file = FileOpen(symbol_name + ".csv", FILE_CSV | FILE_WRITE, ',');
         if (file != INVALID_HANDLE)
         {
             FileWrite(file, "Time", "Open", "High", "Low", "Close", "Volume");
-            for (int iBar = 0; iBar < bar ; iBar++)
+            for (iBar = 0; iBar < bar ; iBar++)
             {
                 FileWrite(
                     file,
@@ -66,7 +71,8 @@ int get_history()
             Alert("ERROR: Invalid open file");
         }
     }
-    return(1);
+    
+    return;
 }
 
 // main function
