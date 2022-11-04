@@ -23,6 +23,7 @@ void get_history()
     
     for (int i = 0; i <= 8 ; i++)
     {
+        rates_count = 0;
         iPeriod = minutes[i];
         symbol_name = Symbol() + IntegerToString(iPeriod);
         
@@ -52,7 +53,7 @@ void get_history()
         if (file != INVALID_HANDLE)
         {
             FileWrite(file, "Time", "Open", "High", "Low", "Close", "Volume");
-            for (iBar = 0; iBar < bar ; iBar++)
+            for (iBar = 0; iBar < rates_count ; iBar++)
             {
                 FileWrite(
                     file,
