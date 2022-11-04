@@ -30,9 +30,10 @@ int get_history()
             rates_count = CopyRates(Symbol(), iPeriod, start_date, end_date, rates);
             if (rates_count > 0)
             {
-               int barCnt = Bars(_Symbol, iPeriod, start_date, end_date); Sleep(r * 100);
+               int barCnt = Bars(_Symbol, iPeriod, start_date, end_date);
                if (barCnt == rates_count)
                   break;
+               else Sleep(r * 100);
             }
             if (rates_count < 1)
             {
