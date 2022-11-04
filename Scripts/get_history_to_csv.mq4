@@ -17,7 +17,7 @@ extern datetime end_date = __DATETIME__;
 int minutes[9] = {1, 5, 15, 30, 60, 240, 1440, 10080, 43200};
 
 // a function that downloads the history of quotations to a csv file
-void get_history()
+int get_history()
 {
     for (int i = 0; i <= 8 ; i++)
     {
@@ -28,10 +28,19 @@ void get_history()
         for (int r = 1; r < 4; r++)
         {
             rates_count = CopyRates(Symbol(), iPeriod, start_date, end_date, rates);
-            if (rates_count == 1) break;
-            Sleep(r * 100);
+            if (rates_count > 0)
+            {
+               int barCnt = Bars(_Symbol, iPeriod, start_date, end_date); Sleep(r * 100);
+               if (barCnt == rates_count)
+                  break;
+            }
+            if (rates_count < 1)
+            {
+                Alert("ERROR: The " + symbol_name + " pair quote is not fully loaded");
+                return(0);
+            }
+            rates_count = 0;
         }
-        if (rates_count < 1) Alert("ERROR: The " + symbol_name + " pair quote is not fully loaded"); continue;
         int bar = ArrayRange(rates, 0);
         int file = FileOpen(symbol_name + ".csv", FILE_CSV | FILE_WRITE, ',');
         if (file != INVALID_HANDLE)
@@ -56,6 +65,7 @@ void get_history()
             Alert("ERROR: Invalid open file");
         }
     }
+    return(1);
 }
 
 // main function
