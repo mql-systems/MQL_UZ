@@ -1,15 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
-# from bs4 import BeautifulSoup
-# import csv
-# from datetime import datetime
-# import os
-# import requests
-# import json
-# import matplotlib.pyplot as plt
-# from openpyxl.styles import PatternFill
 from openpyxl import Workbook
 import pandas as pd
 
